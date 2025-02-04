@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BrightSign Video Selector - PDI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Podium+Sharp:wght@900&display=swap');
+        
+        body {
+            font-family: 'Podium Sharp', sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+        }
+        .logo-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: white;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .logo {
+            height: 50px;
+        }
+        .banner {
+            display: flex;
+            justify-content: flex-end; /* Moves text to the right */
+            align-items: center;
+            background: #000000;
+            padding: 20px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding-right: 20px; /* Adds spacing from the right edge */
+        }
+        .banner h1 {
+            font-size: 28px;
+            color: #c8142c;
+            margin: 0;
+            text-align: center;
+            width: 100%;
+            padding-right: 40px;
+        }
+        .video-header {
+            background-color: #000000;
+            color: #c8142c;
+            text-align: center;
+            font-size: 24px;
+            padding: 15px;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 90%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 120px auto 0;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
+        }
+        .container h2 {
+            color: #c8142c;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 15px;
+            font-size: 18px;
+            font-family: 'Podium Sharp', sans-serif;
+            color: white;
+            background-color: #c8142c;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #9e1022;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <img class="logo" src="PDI_Logo.png" alt="Power Design Logo">
+    </div>
+    <div class="banner">
+        <h1>Welcome to PDI</h1>
+    </div>
+    <div class="container">
+        <div class="video-header">
+            <h2>Videos</h2>
+        </div>
+        <button onclick="sendCommand('video1')">Tough Rougher 2024</button>
+        <button onclick="sendCommand('video2')">Billion Dollar Bash</button>
+        <button onclick="sendCommand('video3')">Truck Giveaway</button>
+    </div>
+
+    <script>
+        function sendCommand(video) {
+            const brightSignIP = "192.168.1.100"; // Change this to your BrightSign's actual IP
+            fetch(`http://${brightSignIP}:8080/play?video=${video}`)
+            .then(response => {
+                if (response.ok) {
+                    alert(`${video} started playing!`);
+                } else {
+                    alert("Failed to send command.");
+                }
+            })
+            .catch(error => alert("Error: " + error));
+        }
+    </script>
+</body>
+</html>
