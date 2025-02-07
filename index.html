@@ -31,26 +31,29 @@
 
     <h1>Select a Video to Play</h1>
 
-    <button onclick="sendCommand('play', 'video1.mp4')">Play Video 1</button>
-    <button onclick="sendCommand('play', 'video2.mp4')">Play Video 2</button>
-    <button onclick="sendCommand('play', 'video3.mp4')">Play Video 3</button>
+    <button onclick="sendCommand('video1.mp4')">Play Video 1</button>
+    <button onclick="sendCommand('video2.mp4')">Play Video 2</button>
+    <button onclick="sendCommand('video3.mp4')">Play Video 3</button>
 
     <h2>Playback Controls</h2>
-    <button onclick="sendCommand('pause')">Pause</button>
-    <button onclick="sendCommand('resume')">Resume</button>
-    <button onclick="sendCommand('restart')">Restart</button>
-    <button onclick="sendCommand('stop')">Stop</button>
+    <button onclick="sendControl('pause')">Pause</button>
+    <button onclick="sendControl('resume')">Play</button>
+    <button onclick="sendControl('restart')">Restart</button>
+    <button onclick="sendControl('stop')">Return to Landing Page</button>
 
     <script>
-        const ws = new WebSocket('ws://localhost:8080');
+        const ws = new WebSocket("ws://localhost:8080");
 
         ws.onopen = () => {
-            console.log('Connected to the WebSocket server');
+            console.log("Connected to WebSocket server.");
         };
 
-        function sendCommand(action, video = '') {
-            const message = JSON.stringify({ action, video });
-            ws.send(message);
+        function sendCommand(video) {
+            ws.send(JSON.stringify({ command: "play", video: video }));
+        }
+
+        function sendControl(action) {
+            ws.send(JSON.stringify({ command: action }));
         }
     </script>
 
