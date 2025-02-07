@@ -42,14 +42,13 @@
     <button onclick="sendControl('stop')">Return to Landing Page</button>
 
     <script>
-        const ws = new WebSocket("ws://yourserver-ip:8080");
-
         function sendCommand(video) {
-            ws.send(JSON.stringify({ command: "play", video: video }));
+            let landingPage = window.open("https://your-landing-page-url.com", "_blank"); // Replace with actual landing page URL
+            landingPage.postMessage({ command: "play", video: video }, "*");
         }
 
         function sendControl(action) {
-            ws.send(JSON.stringify({ command: action }));
+            window.postMessage({ command: action }, "*");
         }
     </script>
 
