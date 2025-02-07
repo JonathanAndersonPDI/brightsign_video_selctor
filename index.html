@@ -31,25 +31,26 @@
 
     <h1>Select a Video to Play</h1>
 
-    <button onclick="sendCommand('video1.mp4')">Play Video 1</button>
-    <button onclick="sendCommand('video2.mp4')">Play Video 2</button>
-    <button onclick="sendCommand('video3.mp4')">Play Video 3</button>
+    <button onclick="sendCommand('play', 'video1.mp4')">Play Video 1</button>
+    <button onclick="sendCommand('play', 'video2.mp4')">Play Video 2</button>
+    <button onclick="sendCommand('play', 'video3.mp4')">Play Video 3</button>
 
     <h2>Playback Controls</h2>
-    <button onclick="sendControl('pause')">Pause</button>
-    <button onclick="sendControl('resume')">Play</button>
-    <button onclick="sendControl('restart')">Restart</button>
-    <button onclick="sendControl('stop')">Return to Landing Page</button>
+    <button onclick="sendCommand('pause')">Pause</button>
+    <button onclick="sendCommand('resume')">Resume</button>
+    <button onclick="sendCommand('restart')">Restart</button>
+    <button onclick="sendCommand('stop')">Stop</button>
 
     <script>
-        function sendCommand(video) {
-            let landingPage = window.open("https://your-landing-page-url.com", "_blank"); // Replace with actual landing page URL
-            landingPage.postMessage({ command: "play", video: video }, "*");
-        }
+        const ws = new WebSocket('ws://localhost:8080');
 
-        function sendControl(action) {
-            let landingPage = window.open("https://your-landing-page-url.com", "_blank"); // Ensure it's your landing page
-            landingPage.postMessage({ command: action }, "*");
+        ws.onopen = () => {
+            console.log('Connected to the WebSocket server');
+        };
+
+        function sendCommand(action, video = '') {
+            const message = JSON.stringify({ action, video });
+            ws.send(message);
         }
     </script>
 
