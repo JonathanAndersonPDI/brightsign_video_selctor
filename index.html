@@ -48,7 +48,8 @@
         }
 
         function sendControl(action) {
-            window.postMessage({ command: action }, "*");
+            let landingPage = window.open("https://your-landing-page-url.com", "_blank"); // Ensure it's your landing page
+            landingPage.postMessage({ command: action }, "*");
         }
     </script>
 
