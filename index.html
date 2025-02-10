@@ -4,19 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Selector</title>
-
-    <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="manifest" href="site.webmanifest">
-
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <style>
         body {
             background-color: black;
             color: white;
-            font-family: 'Libre Franklin', sans-serif;
             text-align: center;
+            font-family: 'Libre Franklin', sans-serif;
         }
         button {
             display: block;
@@ -35,9 +30,7 @@
     </style>
 </head>
 <body>
-
     <h1>Select a Video to Play</h1>
-
     <button onclick="sendCommand('video1.mp4')">Play Video 1</button>
     <button onclick="sendCommand('video2.mp4')">Play Video 2</button>
     <button onclick="sendCommand('video3.mp4')">Play Video 3</button>
@@ -59,6 +52,5 @@
             ws.send(JSON.stringify({ command: action }));
         }
     </script>
-
 </body>
 </html>
