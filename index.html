@@ -4,16 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Selector</title>
+
+    <!-- Favicon -->
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+
     <style>
+        /* General Styles */
         body {
+            margin: 0;
+            padding: 0;
             background-color: black;
             color: white;
             font-family: 'Libre Franklin', sans-serif;
             text-align: center;
         }
+
+        h1, h2 {
+            margin-top: 20px;
+        }
+
+        /* Button Styling */
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
         button {
-            display: block;
-            margin: 20px auto;
+            width: 300px;
             padding: 15px;
             font-size: 20px;
             background-color: red;
@@ -21,9 +44,16 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background 0.3s ease-in-out;
         }
+
         button:hover {
             background-color: darkred;
+        }
+
+        /* Video Controls Section */
+        .controls-container {
+            margin-top: 40px;
         }
     </style>
 </head>
@@ -31,29 +61,49 @@
 
     <h1>Select a Video to Play</h1>
 
-    <button onclick="sendCommand('https://yourserver/video1.mp4')">Play Video 1</button>
-    <button onclick="sendCommand('https://yourserver/video2.mp4')">Play Video 2</button>
-    <button onclick="sendCommand('https://yourserver/video3.mp4')">Play Video 3</button>
+    <div class="btn-container">
+        <button onclick="sendCommand('video1.mp4')">Play Video 1</button>
+        <button onclick="sendCommand('video2.mp4')">Play Video 2</button>
+        <button onclick="sendCommand('video3.mp4')">Play Video 3</button>
+    </div>
 
     <h2>Playback Controls</h2>
-    <button onclick="sendControl('pause')">Pause</button>
-    <button onclick="sendControl('resume')">Play</button>
-    <button onclick="sendControl('restart')">Restart</button>
-    <button onclick="sendControl('stop')">Return to Landing Page</button>
+    <div class="controls-container">
+        <button onclick="sendControl('pause')">Pause</button>
+        <button onclick="sendControl('resume')">Play</button>
+        <button onclick="sendControl('restart')">Restart</button>
+        <button onclick="sendControl('stop')">Return to Landing Page</button>
+    </div>
 
     <script>
+        // Establish WebSocket Connection
         const ws = new WebSocket("ws://localhost:8080");
 
         ws.onopen = () => {
             console.log("Connected to WebSocket server.");
         };
 
+        ws.onclose = () => {
+            console.log("WebSocket closed. Attempting to reconnect...");
+            setTimeout(() => {
+                location.reload();
+            }, 2000);
+        };
+
         function sendCommand(video) {
-            ws.send(JSON.stringify({ action: "play", video: video }));
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ action: "play", video: video }));
+            } else {
+                console.error("WebSocket is not open.");
+            }
         }
 
         function sendControl(action) {
-            ws.send(JSON.stringify({ action: action }));
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ action: action }));
+            } else {
+                console.error("WebSocket is not open.");
+            }
         }
     </script>
 
