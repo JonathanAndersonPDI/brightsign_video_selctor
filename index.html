@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Selector</title>
+
+    <!-- Favicon Links -->
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+
     <style>
         body {
             background-color: black;
@@ -42,33 +49,17 @@
     <button onclick="sendControl('stop')">Return to Landing Page</button>
 
     <script>
-        let ws;
+        const ws = new WebSocket("ws://localhost:8080");
 
-        function connectWebSocket() {
-            ws = new WebSocket("ws://localhost:8080");
-
-            ws.onopen = () => {
-                console.log("Connected to WebSocket server.");
-            };
-
-            ws.onclose = () => {
-                console.log("WebSocket closed. Reconnecting in 3 seconds...");
-                setTimeout(connectWebSocket, 3000);
-            };
-
-            ws.onerror = (error) => {
-                console.error("WebSocket Error: ", error);
-            };
-        }
-
-        // Initialize WebSocket connection
-        connectWebSocket();
+        ws.onopen = () => console.log("Connected to WebSocket server.");
+        ws.onclose = () => console.log("WebSocket connection closed.");
+        ws.onerror = (error) => console.log("WebSocket error:", error);
 
         function sendCommand(video) {
             if (ws.readyState === WebSocket.OPEN) {
                 ws.send(JSON.stringify({ action: "play", video: video }));
             } else {
-                console.error("WebSocket is not open. Cannot send command.");
+                console.error("WebSocket is not open.");
             }
         }
 
@@ -76,7 +67,7 @@
             if (ws.readyState === WebSocket.OPEN) {
                 ws.send(JSON.stringify({ action: action }));
             } else {
-                console.error("WebSocket is not open. Cannot send control command.");
+                console.error("WebSocket is not open.");
             }
         }
     </script>
