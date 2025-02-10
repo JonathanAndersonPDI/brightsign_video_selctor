@@ -4,13 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Selector</title>
-
-    <!-- Favicon Links -->
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="manifest" href="site.webmanifest">
-
     <style>
         body {
             background-color: black;
@@ -38,9 +31,9 @@
 
     <h1>Select a Video to Play</h1>
 
-    <button onclick="sendCommand('video1.mp4')">Play Video 1</button>
-    <button onclick="sendCommand('video2.mp4')">Play Video 2</button>
-    <button onclick="sendCommand('video3.mp4')">Play Video 3</button>
+    <button onclick="sendCommand('https://yourserver/video1.mp4')">Play Video 1</button>
+    <button onclick="sendCommand('https://yourserver/video2.mp4')">Play Video 2</button>
+    <button onclick="sendCommand('https://yourserver/video3.mp4')">Play Video 3</button>
 
     <h2>Playback Controls</h2>
     <button onclick="sendControl('pause')">Pause</button>
@@ -51,24 +44,16 @@
     <script>
         const ws = new WebSocket("ws://localhost:8080");
 
-        ws.onopen = () => console.log("Connected to WebSocket server.");
-        ws.onclose = () => console.log("WebSocket connection closed.");
-        ws.onerror = (error) => console.log("WebSocket error:", error);
+        ws.onopen = () => {
+            console.log("Connected to WebSocket server.");
+        };
 
         function sendCommand(video) {
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ action: "play", video: video }));
-            } else {
-                console.error("WebSocket is not open.");
-            }
+            ws.send(JSON.stringify({ action: "play", video: video }));
         }
 
         function sendControl(action) {
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ action: action }));
-            } else {
-                console.error("WebSocket is not open.");
-            }
+            ws.send(JSON.stringify({ action: action }));
         }
     </script>
 
