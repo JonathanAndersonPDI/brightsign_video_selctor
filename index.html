@@ -42,18 +42,42 @@
     <button onclick="sendControl('stop')">Return to Landing Page</button>
 
     <script>
-        const ws = new WebSocket("ws://localhost:8080");
+        let ws;
 
-        ws.onopen = () => {
-            console.log("Connected to WebSocket server.");
-        };
+        function connectWebSocket() {
+            ws = new WebSocket("ws://localhost:8080");
+
+            ws.onopen = () => {
+                console.log("Connected to WebSocket server.");
+            };
+
+            ws.onclose = () => {
+                console.log("WebSocket closed. Reconnecting in 3 seconds...");
+                setTimeout(connectWebSocket, 3000);
+            };
+
+            ws.onerror = (error) => {
+                console.error("WebSocket Error: ", error);
+            };
+        }
+
+        // Initialize WebSocket connection
+        connectWebSocket();
 
         function sendCommand(video) {
-            ws.send(JSON.stringify({ command: "play", video: video }));
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ action: "play", video: video }));
+            } else {
+                console.error("WebSocket is not open. Cannot send command.");
+            }
         }
 
         function sendControl(action) {
-            ws.send(JSON.stringify({ command: action }));
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ action: action }));
+            } else {
+                console.error("WebSocket is not open. Cannot send control command.");
+            }
         }
     </script>
 
