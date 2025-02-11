@@ -44,23 +44,26 @@
     <script>
         const ws = new WebSocket("ws://localhost:8080");
 
-        function sendCommand(video) {
-    if (ws.readyState === WebSocket.OPEN) {
-        let message = JSON.stringify({ command: "play", video: video });
-        ws.send(message);
-        console.log("Sent command to play:", message);
-    } else {
-        console.warn("WebSocket is not open. Reconnecting...");
-        ws = new WebSocket("ws://localhost:8080");
-
         ws.onopen = () => {
-            let message = JSON.stringify({ command: "play", video: video });
-            ws.send(message);
-            console.log("Reconnected and sent command to play:", message);
+            console.log("✅ WebSocket connected successfully on Video Selector Page!");
         };
-    }
-}
 
+        function sendCommand(video) {
+            if (ws.readyState === WebSocket.OPEN) {
+                let message = JSON.stringify({ command: "play", video: video });
+                ws.send(message);
+                console.log("Sent command to play:", message);
+            } else {
+                console.warn("WebSocket is not open. Reconnecting...");
+                ws = new WebSocket("ws://localhost:8080");
+
+                ws.onopen = () => {
+                    let message = JSON.stringify({ command: "play", video: video });
+                    ws.send(message);
+                    console.log("Reconnected and sent command to play:", message);
+                };
+            }
+        }
 
         function sendControl(action) {
             ws.send(JSON.stringify({ command: action }));
