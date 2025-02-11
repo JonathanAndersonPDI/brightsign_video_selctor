@@ -48,25 +48,34 @@
             console.log("✅ WebSocket connected successfully on Video Selector Page!");
         };
 
+        ws.onerror = (error) => {
+            console.error("❌ WebSocket Error on Video Selector Page:", error);
+        };
+
         function sendCommand(video) {
             if (ws.readyState === WebSocket.OPEN) {
                 let message = JSON.stringify({ command: "play", video: video });
                 ws.send(message);
-                console.log("Sent command to play:", message);
+                console.log("📤 Sent command to play:", message);
             } else {
-                console.warn("WebSocket is not open. Reconnecting...");
+                console.warn("⚠️ WebSocket is not open. Trying to reconnect...");
                 ws = new WebSocket("ws://localhost:8080");
 
                 ws.onopen = () => {
                     let message = JSON.stringify({ command: "play", video: video });
                     ws.send(message);
-                    console.log("Reconnected and sent command to play:", message);
+                    console.log("🔄 Reconnected and sent command to play:", message);
                 };
             }
         }
 
         function sendControl(action) {
-            ws.send(JSON.stringify({ command: action }));
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ command: action }));
+                console.log("📤 Sent control command:", action);
+            } else {
+                console.warn("⚠️ WebSocket is not open. Cannot send command.");
+            }
         }
     </script>
 </body>
