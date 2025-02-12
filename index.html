@@ -43,7 +43,7 @@
 
     <h2>Playback Controls</h2>
     <button onclick="sendControl('pause')">Pause</button>
-    <button onclick="sendControl('resume')">Play</button>
+    <button onclick="sendControl('play_resume')">Play</button> <!-- Sends both play & resume -->
     <button onclick="sendControl('restart')">Restart</button>
     <button onclick="sendControl('stop')">Return to Landing Page</button>
 
@@ -66,25 +66,47 @@
 
         function sendCommand(video) {
             if (ws.readyState === WebSocket.OPEN) {
-                let message = JSON.stringify({ command: "play", video: video });
-                ws.send(message);
-                console.log("📤 Sent command to play:", message);
+                // Send play command with video
+                let playMessage = JSON.stringify({ command: "play", video: video });
+                ws.send(playMessage);
+                console.log("📤 Sent command to load video:", playMessage);
+
+                // Send resume command right after
+                let resumeMessage = JSON.stringify({ command: "resume" });
+                ws.send(resumeMessage);
+                console.log("📤 Sent command to resume video:", resumeMessage);
             } else {
                 console.warn("⚠️ WebSocket is not open. Trying to reconnect...");
                 ws = new WebSocket("ws://localhost:8080");
 
                 ws.onopen = () => {
-                    let message = JSON.stringify({ command: "play", video: video });
-                    ws.send(message);
-                    console.log("🔄 Reconnected and sent command to play:", message);
+                    let playMessage = JSON.stringify({ command: "play", video: video });
+                    ws.send(playMessage);
+                    console.log("🔄 Reconnected and sent command to load video:", playMessage);
+
+                    let resumeMessage = JSON.stringify({ command: "resume" });
+                    ws.send(resumeMessage);
+                    console.log("🔄 Reconnected and sent command to resume video:", resumeMessage);
                 };
             }
         }
 
         function sendControl(action) {
             if (ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ command: action }));
-                console.log("📤 Sent control command:", action);
+                if (action === "play_resume") {
+                    // If the Play button in Playback Controls is pressed, send both play and resume
+                    let playMessage = JSON.stringify({ command: "play" });
+                    ws.send(playMessage);
+                    console.log("📤 Sent command to play:", playMessage);
+
+                    let resumeMessage = JSON.stringify({ command: "resume" });
+                    ws.send(resumeMessage);
+                    console.log("📤 Sent command to resume video:", resumeMessage);
+                } else {
+                    // Otherwise, send normal control commands
+                    ws.send(JSON.stringify({ command: action }));
+                    console.log("📤 Sent control command:", action);
+                }
             } else {
                 console.warn("⚠️ WebSocket is not open. Cannot send command.");
             }
