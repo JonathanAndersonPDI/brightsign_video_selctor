@@ -36,6 +36,12 @@
     <button onclick="sendCommand('SzX00mfwDaU')">Play Video 2</button>
     <button onclick="sendCommand('LnjRftQP6BQ')">Play Video 3</button>
 
+    <h2>Playback Controls</h2>
+    <button onclick="sendControl('pause')">Pause</button>
+    <button onclick="sendControl('resume')">Play</button>
+    <button onclick="sendControl('restart')">Restart</button>
+    <button onclick="sendControl('stop')">Return to Landing Page</button>
+
     <script>
         const ws = new WebSocket("ws://localhost:8080");
 
@@ -48,6 +54,15 @@
                 let message = JSON.stringify({ command: "play", video: videoId });
                 ws.send(message);
                 console.log("📤 Sent command to play video:", message);
+            } else {
+                console.warn("⚠️ WebSocket is not open. Cannot send command.");
+            }
+        }
+
+        function sendControl(action) {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ command: action }));
+                console.log("📤 Sent control command:", action);
             } else {
                 console.warn("⚠️ WebSocket is not open. Cannot send command.");
             }
