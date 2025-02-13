@@ -32,56 +32,24 @@
 <body>
     <h1>Select a Video to Play</h1>
 
-    <button onclick="sendPlayCommand('video1.mp4')">Play Video 1</button>
-    <button onclick="sendPlayCommand('video2.mp4')">Play Video 2</button>
-    <button onclick="sendPlayCommand('video3.mp4')">Play Video 3</button>
-
-    <h2>Playback Controls</h2>
-    <button onclick="sendControl('pause')">Pause</button>
-    <button onclick="sendControl('resume')">Play</button>
-    <button onclick="sendControl('restart')">Restart</button>
-    <button onclick="sendControl('stop')">Return to Landing Page</button>
+    <button onclick="sendCommand('CpfgfQ4mBdQ')">Play Video 1</button>
+    <button onclick="sendCommand('SzX00mfwDaU')">Play Video 2</button>
+    <button onclick="sendCommand('LnjRftQP6BQ')">Play Video 3</button>
 
     <script>
         const ws = new WebSocket("ws://localhost:8080");
-        let currentVideo = null;
 
         ws.onopen = () => {
             console.log("✅ WebSocket connected successfully on Video Selector Page!");
         };
 
-        ws.onerror = (error) => {
-            console.error("❌ WebSocket Error on Video Selector Page:", error);
-        };
-
-        function sendPlayCommand(video) {
+        function sendCommand(videoId) {
             if (ws.readyState === WebSocket.OPEN) {
-                currentVideo = video;
-
-                // Send play command
-                ws.send(JSON.stringify({ command: "play", video: video }));
-                console.log(`📤 Sent command to load video: ${video}`);
-
-                // Send resume command shortly after
-                setTimeout(() => {
-                    ws.send(JSON.stringify({ command: "resume" }));
-                    console.log("📤 Sent command to resume video");
-                }, 500);
+                let message = JSON.stringify({ command: "play", video: videoId });
+                ws.send(message);
+                console.log("📤 Sent command to play video:", message);
             } else {
                 console.warn("⚠️ WebSocket is not open. Cannot send command.");
-            }
-        }
-
-        function sendControl(action) {
-            if (ws.readyState === WebSocket.OPEN) {
-                if (action === "resume" && !currentVideo) {
-                    console.warn("⚠️ No video selected to resume.");
-                    return;
-                }
-                ws.send(JSON.stringify({ command: action }));
-                console.log(`📤 Sent control command: ${action}`);
-            } else {
-                console.warn("⚠️ WebSocket is not open.");
             }
         }
     </script>
