@@ -41,8 +41,9 @@
     <button onclick="sendCommand('LnjRftQP6BQ')">Play Video 3</button>
 
     <h2>Playback Controls</h2>
+    <button onclick="sendControl('playControl')">Play</button> <!-- ✅ New command -->
     <button onclick="sendControl('pause')">Pause</button>
-    <button onclick="sendControl('resume')">Play</button>
+    <button onclick="sendControl('resume')">Resume</button>
     <button onclick="sendControl('restart')">Restart</button>
     <button onclick="sendControl('stop')">Stop</button>
 
@@ -65,17 +66,13 @@
         }
 
         function sendCommand(videoId) {
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ command: "play", video: videoId }));
-                document.getElementById("status").innerText = `📺 Playing Video: ${videoId}`;
-            }
+            ws.send(JSON.stringify({ command: "play", video: videoId }));
+            document.getElementById("status").innerText = `📺 Playing Video: ${videoId}`;
         }
 
         function sendControl(action) {
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ command: action }));
-                document.getElementById("status").innerText = `🎮 Sent Control: ${action}`;
-            }
+            ws.send(JSON.stringify({ command: action }));
+            document.getElementById("status").innerText = `🎮 Sent Control: ${action}`;
         }
 
         connectWebSocket();
