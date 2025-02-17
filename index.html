@@ -4,14 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Selector</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <style>
         body {
             background-color: black;
             color: white;
             text-align: center;
-            font-family: 'Libre Franklin', sans-serif;
         }
         button {
             display: block;
@@ -41,7 +38,7 @@
     <button onclick="sendCommand('LnjRftQP6BQ')">Play Video 3</button>
 
     <h2>Playback Controls</h2>
-    <button onclick="sendControl('playControl')">Play</button>  <!-- ✅ This button works now -->
+    <button onclick="sendControl('playControl')">Play</button>
     <button onclick="sendControl('pause')">Pause</button>
     <button onclick="sendControl('resume')">Resume</button>
     <button onclick="sendControl('restart')">Restart</button>
@@ -51,40 +48,25 @@
     <div id="status">Connecting to WebSocket...</div>
 
     <script>
-        let ws;
-        let lastSelectedVideo = null;
+        let ws = new WebSocket("ws://localhost:8080");
 
-        function connectWebSocket() {
-            ws = new WebSocket("ws://localhost:8080");
+        ws.onopen = () => {
+            document.getElementById("status").innerText = "✅ WebSocket Connected!";
+        };
 
-            ws.onopen = () => {
-                document.getElementById("status").innerText = "✅ WebSocket Connected!";
-            };
-
-            ws.onclose = () => {
-                document.getElementById("status").innerText = "⚠️ WebSocket Disconnected. Retrying...";
-                setTimeout(connectWebSocket, 5000);
-            };
-        }
+        ws.onclose = () => {
+            document.getElementById("status").innerText = "⚠️ WebSocket Disconnected. Retrying...";
+            setTimeout(() => ws = new WebSocket("ws://localhost:8080"), 5000);
+        };
 
         function sendCommand(videoId) {
-            lastSelectedVideo = videoId;
             ws.send(JSON.stringify({ command: "play", video: videoId }));
             document.getElementById("status").innerText = `📺 Selected Video: ${videoId}`;
         }
 
         function sendControl(action) {
-            if (action === "playControl" && lastSelectedVideo) {
-                ws.send(JSON.stringify({ command: "playControl", video: lastSelectedVideo }));
-                console.log("📤 Sent playControl:", lastSelectedVideo);
-            } else {
-                ws.send(JSON.stringify({ command: action }));
-                console.log("📤 Sent command:", action);
-            }
-            document.getElementById("status").innerText = `🎮 Sent Control: ${action}`;
+            ws.send(JSON.stringify({ command: action }));
         }
-
-        connectWebSocket();
     </script>
 </body>
 </html>
