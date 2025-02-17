@@ -54,14 +54,8 @@
             document.getElementById("status").innerText = "✅ WebSocket Connected!";
         };
 
-        ws.onclose = () => {
-            document.getElementById("status").innerText = "⚠️ WebSocket Disconnected. Retrying...";
-            setTimeout(() => ws = new WebSocket("ws://localhost:8080"), 5000);
-        };
-
         function sendCommand(videoId) {
             ws.send(JSON.stringify({ command: "play", video: videoId }));
-            document.getElementById("status").innerText = `📺 Selected Video: ${videoId}`;
         }
 
         function sendControl(action) {
