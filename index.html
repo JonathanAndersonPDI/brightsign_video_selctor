@@ -46,34 +46,58 @@
     <button onclick="sendControl('resume')">Resume</button>
     <button onclick="sendControl('restart')">Restart</button>
     <button onclick="sendControl('stop')">Stop</button>
-    <button onclick="sendControl('return')">Return to Landing Page</button> <!-- ✅ New button -->
+    
+    <!-- ✅ Updated return button to go directly back -->
+    <button onclick="returnToLanding()">Return to Landing Page</button>
 
     <div id="status">Connecting to WebSocket...</div>
 
     <script>
         let ws;
+        let reconnectTimeout = 5000; // 5 seconds for reconnection attempts
 
         function connectWebSocket() {
             ws = new WebSocket("ws://localhost:8080");
 
             ws.onopen = () => {
                 document.getElementById("status").innerText = "✅ WebSocket Connected!";
+                console.log("✅ WebSocket connected successfully.");
             };
 
             ws.onclose = () => {
                 document.getElementById("status").innerText = "⚠️ WebSocket Disconnected. Retrying...";
-                setTimeout(connectWebSocket, 5000);
+                console.warn("⚠️ WebSocket Disconnected. Retrying...");
+                setTimeout(connectWebSocket, reconnectTimeout);
+            };
+
+            ws.onerror = (error) => {
+                console.error("❌ WebSocket Error:", error);
             };
         }
 
         function sendCommand(videoId) {
-            ws.send(JSON.stringify({ command: "play", video: videoId }));
-            document.getElementById("status").innerText = `📺 Playing Video: ${videoId}`;
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ command: "play", video: videoId }));
+                document.getElementById("status").innerText = `📺 Playing Video: ${videoId}`;
+                console.log(`📤 Sent play command for video: ${videoId}`);
+            } else {
+                console.warn("⚠️ WebSocket is not open. Cannot send command.");
+            }
         }
 
         function sendControl(action) {
-            ws.send(JSON.stringify({ command: action }));
-            document.getElementById("status").innerText = `🎮 Sent Control: ${action}`;
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ command: action }));
+                document.getElementById("status").innerText = `🎮 Sent Control: ${action}`;
+                console.log(`📤 Sent control command: ${action}`);
+            } else {
+                console.warn("⚠️ WebSocket is not open. Cannot send control.");
+            }
+        }
+
+        function returnToLanding() {
+            console.log("🔄 Redirecting to landing page...");
+            window.location.href = "index.html"; // ✅ Ensure this matches your actual landing page filename
         }
 
         connectWebSocket();
