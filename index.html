@@ -42,7 +42,7 @@
 
     <h2>Playback Controls</h2>
     <button onclick="sendControl('pause')">Pause</button>
-    <button onclick="sendControl('resume')">Play</button>
+    <button onclick="sendControl('resume')">Play</button> <!-- Now resumes video on Landing Page -->
     <button onclick="sendControl('restart')">Restart</button>
     <button onclick="sendControl('stop')">Return to Landing Page</button>
 
@@ -68,6 +68,13 @@
             if (ws.readyState === WebSocket.OPEN) {
                 ws.send(JSON.stringify({ command: "play", video: videoId }));
                 document.getElementById("status").innerText = `📺 Playing Video: ${videoId}`;
+            }
+        }
+
+        function sendControl(action) {
+            if (ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({ command: action }));
+                document.getElementById("status").innerText = `🎮 Sent Control: ${action}`;
             }
         }
 
