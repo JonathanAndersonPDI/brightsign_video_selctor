@@ -42,7 +42,7 @@
 
     <h2>Playback Controls</h2>
     <button onclick="sendControl('pause')">Pause</button>
-    <button onclick="sendControl('resume')">Play</button> <!-- Resumes current video -->
+    <button onclick="sendControl('resume')">Play</button>
     <button onclick="sendControl('restart')">Restart</button>
     <button onclick="sendControl('stop')">Return to Landing Page</button>
 
@@ -50,51 +50,27 @@
 
     <script>
         let ws;
-        let reconnectInterval = 5000; // 5 seconds for reconnect attempts
 
         function connectWebSocket() {
             ws = new WebSocket("ws://localhost:8080");
 
             ws.onopen = () => {
-                console.log("✅ WebSocket connected successfully on Video Selector Page!");
                 document.getElementById("status").innerText = "✅ WebSocket Connected!";
             };
 
             ws.onclose = () => {
-                console.warn("⚠️ WebSocket connection lost. Retrying...");
                 document.getElementById("status").innerText = "⚠️ WebSocket Disconnected. Retrying...";
-                setTimeout(connectWebSocket, reconnectInterval);
-            };
-
-            ws.onerror = (error) => {
-                console.error("❌ WebSocket Error:", error);
+                setTimeout(connectWebSocket, 5000);
             };
         }
 
         function sendCommand(videoId) {
             if (ws.readyState === WebSocket.OPEN) {
-                let message = JSON.stringify({ command: "play", video: videoId });
-                ws.send(message);
-                console.log("📤 Sent command to play video:", message);
+                ws.send(JSON.stringify({ command: "play", video: videoId }));
                 document.getElementById("status").innerText = `📺 Playing Video: ${videoId}`;
-            } else {
-                console.warn("⚠️ WebSocket is not open. Cannot send command.");
-                document.getElementById("status").innerText = "⚠️ WebSocket Not Connected!";
             }
         }
 
-        function sendControl(action) {
-            if (ws.readyState === WebSocket.OPEN) {
-                ws.send(JSON.stringify({ command: action }));
-                console.log("📤 Sent control command:", action);
-                document.getElementById("status").innerText = `🎮 Sent Control: ${action}`;
-            } else {
-                console.warn("⚠️ WebSocket is not open. Cannot send command.");
-                document.getElementById("status").innerText = "⚠️ WebSocket Not Connected!";
-            }
-        }
-
-        // Connect WebSocket when page loads
         connectWebSocket();
     </script>
 </body>
