@@ -59,9 +59,9 @@
         }
 
         function sendControl(action) {
-    console.log(`📤 Sending Control Command: ${action}`);
-    ws.send(JSON.stringify({ command: action }));
-}
+            console.log(`📤 Sending Control Command: ${action}`);
+            ws.send(JSON.stringify({ command: action }));
+        }
     </script>
 </body>
 </html>
