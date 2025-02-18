@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Selector</title>
     <style>
-        body { background-color: black; color: white; text-align: center; }
+        body {
+            background-color: black;
+            color: white;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
         button {
             display: block;
             margin: 20px auto;
@@ -17,19 +22,44 @@
             border-radius: 5px;
             cursor: pointer;
         }
-        button:hover { background-color: darkred; }
+        button:hover {
+            background-color: darkred;
+        }
+        #status {
+            margin-top: 20px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
     <h1>Select a Video</h1>
-    <button onclick="selectVideo('CpfgfQ4mBdQ')">Play Video 1</button>
-    <button onclick="selectVideo('SzX00mfwDaU')">Play Video 2</button>
-    <button onclick="selectVideo('LnjRftQP6BQ')">Play Video 3</button>
+
+    <button onclick="sendCommand('CpfgfQ4mBdQ')">Play Video 1</button>
+    <button onclick="sendCommand('SzX00mfwDaU')">Play Video 2</button>
+    <button onclick="sendCommand('LnjRftQP6BQ')">Play Video 3</button>
+
+    <h2>Playback Controls</h2>
+    <button onclick="sendControl('playControl')">Play</button>
+    <button onclick="sendControl('pause')">Pause</button>
+    <button onclick="sendControl('resume')">Resume</button>
+    <button onclick="sendControl('restart')">Restart</button>
+    <button onclick="sendControl('stop')">Stop</button>
+
+    <div id="status">Connecting to WebSocket...</div>
 
     <script>
-        function selectVideo(videoId) {
-            localStorage.setItem("selectedVideo", videoId);
-            window.location.href = "landing.html?video=" + videoId; // Redirect with URL parameter
+        let ws = new WebSocket("ws://localhost:8080");
+
+        ws.onopen = () => {
+            document.getElementById("status").innerText = "✅ WebSocket Connected!";
+        };
+
+        function sendCommand(videoId) {
+            ws.send(JSON.stringify({ command: "play", video: videoId }));
+        }
+
+        function sendControl(action) {
+            ws.send(JSON.stringify({ command: action }));
         }
     </script>
 </body>
