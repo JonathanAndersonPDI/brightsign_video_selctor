@@ -3,70 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Selector</title>
-    <style>
-        body {
-            background-color: black;
-            color: white;
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
-        button {
-            display: block;
-            margin: 20px auto;
-            padding: 15px;
-            font-size: 20px;
-            background-color: red;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: darkred;
-        }
-        #status {
-            margin-top: 20px;
-            font-size: 18px;
-        }
-    </style>
+    <title>BrightSign Widget Controller</title>
 </head>
 <body>
-    <h1>Select a Video to Play</h1>
-
-    <button onclick="playVideo('https://files.powerdesigninc.us/dl/brnCFp7FAn')">Play Video 1</button>
-    <button onclick="playVideo('https://files.powerdesigninc.us/dl/T4kVIKyLaH')">Play Video 2</button>
-    <button onclick="playVideo('https://files.powerdesigninc.us/dl/An8OwQsVxT')">Play Video 3</button>
-
-    <h2>Playback Controls</h2>
-    <button onclick="sendControl('pause')">Pause</button>
-    <button onclick="sendControl('stop')">Stop</button>
-    <button onclick="sendControl('return')">Return to Landing Page</button>
-
-    <div id="status">Connecting to WebSocket...</div>
-
+    <h1>BrightSign Widget Controller</h1>
+    <label for="widgetId">Widget ID:</label>
+    <input type="text" id="widgetId" placeholder="Enter Widget ID">
+    <label for="content">Content:</label>
+    <input type="text" id="content" placeholder="Enter New Content">
+    <button onclick="sendUpdate()">Update Widget</button>
+    
     <script>
-        let ws = new WebSocket("ws://localhost:8080");
+        const ws = new WebSocket("ws://YOUR_BRIGHTSIGN_IP:8080");
 
-        ws.onopen = () => {
-            document.getElementById("status").innerText = "✅ WebSocket Connected!";
-        };
-
-        function playVideo(videoUrl) {
-            console.log(`🎬 Opening Video: ${videoUrl}`);
-            window.open(videoUrl, "_blank"); // ✅ Opens the Egnyte video in a new tab
-            sendCommand("openVideo", videoUrl);
-        }
-
-        function sendCommand(command, videoUrl = null) {
-            let message = { command };
-            if (videoUrl) message.url = videoUrl;
-            ws.send(JSON.stringify(message));
-        }
-
-        function sendControl(action) {
-            console.log(`📤 Sending Control Command: ${action}`);
-            ws.send(JSON.stringify({ command: action }));
+        ws.onopen = () => console.log("Connected to BrightSign");
+        ws.onmessage = (event) => console.log("Response: ", event.data);
+        ws.onerror = (error) => console.error("WebSocket Error: ", error);
+        
+        function sendUpdate() {
+            const widgetId = document.getElementById("widgetId").value;
+            const content = document.getElementById("content").value;
+            
+            const message = JSON.stringify({ action: "update", widgetId, content });
+            ws.send(message);
         }
     </script>
 </body>
