@@ -34,15 +34,14 @@
 <body>
     <h1>Select a Video to Play</h1>
 
-    <button onclick="sendCommand('openVideo', 'https://files.powerdesigninc.us/dl/brnCFp7FAn')">Play Video 1</button>
-    <button onclick="sendCommand('openVideo', 'https://files.powerdesigninc.us/dl/T4kVIKyLaH')">Play Video 2</button>
-    <button onclick="sendCommand('openVideo', 'https://files.powerdesigninc.us/dl/An8OwQsVxT')">Play Video 3</button>
+    <button onclick="playVideo('https://files.powerdesigninc.us/dl/brnCFp7FAn')">Play Video 1</button>
+    <button onclick="playVideo('https://files.powerdesigninc.us/dl/T4kVIKyLaH')">Play Video 2</button>
+    <button onclick="playVideo('https://files.powerdesigninc.us/dl/An8OwQsVxT')">Play Video 3</button>
 
     <h2>Playback Controls</h2>
-    <button onclick="sendCommand('play')">Play</button>
-    <button onclick="sendCommand('pause')">Pause</button>
-    <button onclick="sendCommand('stop')">Stop</button>
-    <button onclick="sendCommand('return')">Return to Landing Page</button>
+    <button onclick="sendControl('pause')">Pause</button>
+    <button onclick="sendControl('stop')">Stop</button>
+    <button onclick="sendControl('return')">Return to Landing Page</button>
 
     <div id="status">Connecting to WebSocket...</div>
 
@@ -53,10 +52,21 @@
             document.getElementById("status").innerText = "✅ WebSocket Connected!";
         };
 
-        function sendCommand(command, url = null) {
-            let message = url ? { command, url } : { command };
+        function playVideo(videoUrl) {
+            console.log(`🎬 Opening Video: ${videoUrl}`);
+            window.open(videoUrl, "_blank"); // ✅ Opens the Egnyte video in a new tab
+            sendCommand("openVideo", videoUrl);
+        }
+
+        function sendCommand(command, videoUrl = null) {
+            let message = { command };
+            if (videoUrl) message.url = videoUrl;
             ws.send(JSON.stringify(message));
-            console.log(`📤 Sent: ${JSON.stringify(message)}`);
+        }
+
+        function sendControl(action) {
+            console.log(`📤 Sending Control Command: ${action}`);
+            ws.send(JSON.stringify({ command: action }));
         }
     </script>
 </body>
