@@ -3,29 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrightSign Widget Controller</title>
+    <title>BrightSign Remote Controller</title>
 </head>
 <body>
-    <h1>BrightSign Widget Controller</h1>
-    <label for="widgetId">Widget ID:</label>
-    <input type="text" id="widgetId" placeholder="Enter Widget ID">
-    <label for="content">Content:</label>
-    <input type="text" id="content" placeholder="Enter New Content">
-    <button onclick="sendUpdate()">Update Widget</button>
+    <h1>BrightSign Controller</h1>
+    <button onclick="sendCommand('play video1')">Play Video 1</button>
+    <button onclick="sendCommand('play video2')">Play Video 2</button>
+    <button onclick="sendCommand('play video3')">Play Video 3</button>
+    <button onclick="sendCommand('pause')">Pause</button>
+    <button onclick="sendCommand('stop')">Stop</button>
+    <button onclick="sendCommand('home')">Return to Home Screen</button>
     
     <script>
-        const ws = new WebSocket("ws://YOUR_BRIGHTSIGN_IP:8080");
-
-        ws.onopen = () => console.log("Connected to BrightSign");
-        ws.onmessage = (event) => console.log("Response: ", event.data);
-        ws.onerror = (error) => console.error("WebSocket Error: ", error);
+        const socket = new WebSocket("ws://YOUR_BRIGHTSIGN_IP:8080");
         
-        function sendUpdate() {
-            const widgetId = document.getElementById("widgetId").value;
-            const content = document.getElementById("content").value;
-            
-            const message = JSON.stringify({ action: "update", widgetId, content });
-            ws.send(message);
+        socket.onopen = function () {
+            console.log("Connected to BrightSign WebSocket");
+        };
+        
+        socket.onerror = function (error) {
+            console.error("WebSocket Error: ", error);
+        };
+        
+        function sendCommand(command) {
+            if (socket.readyState === WebSocket.OPEN) {
+                socket.send(command);
+                console.log("Sent command: ", command);
+            } else {
+                console.error("WebSocket not connected.");
+            }
         }
     </script>
 </body>
