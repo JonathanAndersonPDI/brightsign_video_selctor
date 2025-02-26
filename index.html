@@ -32,18 +32,17 @@
     </style>
 </head>
 <body>
-    <h1>Select a Video</h1>
+    <h1>Select a Video to Play</h1>
 
-    <button onclick="sendCommand('CpfgfQ4mBdQ')">Play Video 1</button>
-    <button onclick="sendCommand('SzX00mfwDaU')">Play Video 2</button>
-    <button onclick="sendCommand('LnjRftQP6BQ')">Play Video 3</button>
+    <button onclick="sendCommand('openVideo', 'https://files.powerdesigninc.us/dl/brnCFp7FAn')">Play Video 1</button>
+    <button onclick="sendCommand('openVideo', 'https://files.powerdesigninc.us/dl/T4kVIKyLaH')">Play Video 2</button>
+    <button onclick="sendCommand('openVideo', 'https://files.powerdesigninc.us/dl/An8OwQsVxT')">Play Video 3</button>
 
     <h2>Playback Controls</h2>
-    <button onclick="sendControl('playControl')">Play</button>
-    <button onclick="sendControl('pause')">Pause</button>
-    <button onclick="sendControl('resume')">Resume</button>
-    <button onclick="sendControl('restart')">Restart</button>
-    <button onclick="sendControl('stop')">Stop</button>
+    <button onclick="sendCommand('play')">Play</button>
+    <button onclick="sendCommand('pause')">Pause</button>
+    <button onclick="sendCommand('stop')">Stop</button>
+    <button onclick="sendCommand('return')">Return to Landing Page</button>
 
     <div id="status">Connecting to WebSocket...</div>
 
@@ -54,12 +53,10 @@
             document.getElementById("status").innerText = "✅ WebSocket Connected!";
         };
 
-        function sendCommand(videoId) {
-            ws.send(JSON.stringify({ command: "play", video: videoId }));
-        }
-
-        function sendControl(action) {
-            ws.send(JSON.stringify({ command: action }));
+        function sendCommand(command, url = null) {
+            let message = url ? { command, url } : { command };
+            ws.send(JSON.stringify(message));
+            console.log(`📤 Sent: ${JSON.stringify(message)}`);
         }
     </script>
 </body>
