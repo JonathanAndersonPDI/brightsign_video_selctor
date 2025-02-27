@@ -15,7 +15,7 @@
     <button onclick="sendCommand('home')">Return to Home Screen</button>
     
     <script>
-        const socket = new WebSocket("ws://YOUR_BRIGHTSIGN_IP:8080");
+        const socket = new WebSocket("ws://172.18.12.176:8080");
         
         socket.onopen = function () {
             console.log("Connected to BrightSign WebSocket");
