@@ -3,35 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BrightSign Remote Controller</title>
+    <title>BrightSign Video Controller</title>
 </head>
 <body>
-    <h1>BrightSign Controller</h1>
-    <button onclick="sendCommand('play video1')">Play Video 1</button>
-    <button onclick="sendCommand('play video2')">Play Video 2</button>
-    <button onclick="sendCommand('play video3')">Play Video 3</button>
-    <button onclick="sendCommand('pause')">Pause</button>
-    <button onclick="sendCommand('stop')">Stop</button>
-    <button onclick="sendCommand('home')">Return to Home Screen</button>
+    <h1>BrightSign Video Controller</h1>
+    <button onclick="sendCommand('video1.mp4.mp4')">Play Video 1</button>
+    <button onclick="sendCommand('video2.mp4.mp4')">Play Video 2</button>
+    <button onclick="sendCommand('video3.mp4.mp4')">Play Video 3</button>
+    <button onclick="sendCommand('stop')">Stop Video</button>
+    <button onclick="sendCommand('home')">Return to Home</button>
     
     <script>
-        const socket = new WebSocket("ws://172.18.12.176:8080");
-        
-        socket.onopen = function () {
-            console.log("Connected to BrightSign WebSocket");
+        const socket = new WebSocket("ws://BRIGHTSIGN_IP:8080"); // Replace with BrightSign IP
+
+        socket.onopen = function() {
+            console.log("Connected to BrightSign");
         };
-        
-        socket.onerror = function (error) {
+
+        socket.onerror = function(error) {
             console.error("WebSocket Error: ", error);
         };
-        
+
         function sendCommand(command) {
-            if (socket.readyState === WebSocket.OPEN) {
-                socket.send(command);
-                console.log("Sent command: ", command);
-            } else {
-                console.error("WebSocket not connected.");
-            }
+            const message = JSON.stringify({ action: command });
+            socket.send(message);
         }
     </script>
 </body>
